@@ -10,14 +10,18 @@ screen.setup(width=800, height=600)
 screen.title("Breakout")
 screen.tracer(0)
 
-x = 0
-
 paddle = Paddle((0, -250))
 
-block1 = Paddle((0, 250))
-block2 = Paddle((-320, 250))
-block3 = Paddle((320, 250))
-
+# Create all the paddle objects
+blocks = []
+x1 = 0
+for i in range(5):
+    x = -480
+    x1 += 160
+    i = Paddle((x + x1, 250))
+    q = Paddle((x + x1, 150))
+    blocks.append(i)
+    blocks.append(q)
 
 ball = Ball()
 
@@ -42,22 +46,13 @@ while game_is_on:
     if ball.distance(paddle) < 30 and ball.ycor() > -350:
         ball.bounce_y()
 
-    if ball.distance(block1) < 30 and ball.ycor() < 350:
-        ball.bounce_y()
-        block1.goto(900, 900)
+    for i in blocks:
+        if ball.distance(i) < 30 and ball.ycor() < 350:
+            ball.bounce_y()
+            i.goto(900, 900)
 
-    if ball.distance(block2) < 30 and ball.ycor() < 350:
-        ball.bounce_y()
-        block2.goto(900, 900)
-
-    if ball.distance(block3) < 30 and ball.ycor() < 350:
-        ball.bounce_y()
-        block3.goto(900, 900)
-
-    if (block1.ycor() == 900
-        and block2.ycor() == 900
-        and block3.ycor() == 900):
-        print("YOU WIN")
+    if all(i.ycor() == 900 for i in blocks):
+        print("You Win")
         break
 
     # Detect R paddle misses
